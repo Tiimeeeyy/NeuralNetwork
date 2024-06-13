@@ -6,7 +6,7 @@ import org.apache.commons.math3.linear.RealVector;
  * Utility class to update Weights and Biases for the Perceptron.
  */
 
-class UpdateParams {
+public class UpdateParams {
 
     private UpdateParams() {
         throw new IllegalStateException("Utility classes should not be initialised!!");

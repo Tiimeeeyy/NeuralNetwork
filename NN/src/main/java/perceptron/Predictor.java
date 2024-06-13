@@ -44,5 +44,7 @@ public class Predictor implements Perceptron {
     @Override
     public void train(RealVector input, RealVector target, double learningRate) { /* Empty method to allow polymorphism */ }
 
-
+    public PerceptronParams getParams() {
+        return params;
+    }
 }
