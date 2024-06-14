@@ -8,9 +8,10 @@ import perceptron.Predictor;
 import perceptron.UpdateParams;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
+// TODO: Input from pathfinding algorithm
+// TODO: Idea: Implement a stack, check which one is the closest , if it is closest, pop from stack and get to the next elements with consecutive shots.
 public class Layer {
     private List<Perceptron> perceptrons;
 
