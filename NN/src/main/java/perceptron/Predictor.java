@@ -31,14 +31,20 @@ public class Predictor implements Perceptron {
         double[] weights = params.getWeights();
         ActivationFunction function = params.getFunction();
         double bias = params.getBias();
-        RealVector weightVector = new ArrayRealVector(weights);
-        double dotProduct = weightVector.dotProduct(input);
-        double[] result = new double[weights.length / input.getDimension()];
+        if (weights.length == 2 || input.getDimension() == 2) { // Handling the input layer.
+            double veloWeight = weights[params.getSize() - 1];
+            RealVector directionWeights = new ArrayRealVector(weights, 0, params.getSize());
+            double dot = directionWeights.dotProduct(input);
+            double velo = function.activation(input.getEntry(0) * veloWeight + bias);
 
-        for (int i = 0; i < result.length; i++) {
-            result[i] = function.activation(dotProduct + bias);
+
+            return new ArrayRealVector(new double[]{function.activation(dot + bias), function.activation(dot + bias), velo});
+        } else { // Handling consecutive Layers.
+            RealVector directionWeights = new ArrayRealVector(weights);
+            double veloWeight = weights[1]; // Random number in the Weights array
+            double dot = directionWeights.dotProduct(input);
+            return new ArrayRealVector(new double[]{function.activation(dot + bias * 0.001), function.activation(dot + bias * 0.0012), function.activation(veloWeight + bias * 0.324)});
         }
-        return new ArrayRealVector(result);
     }
 
     @Override

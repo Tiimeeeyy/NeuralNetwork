@@ -27,6 +27,6 @@ public class Trainer implements Perceptron {
         RealVector output = predictor.predict(input);
         RealVector error = target.subtract(output);
 
-        UpdateParams.update(params, input, error, learningRate);
+        //UpdateParams.update(params, input, error, learningRate);
     }
 }

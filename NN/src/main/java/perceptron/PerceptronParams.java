@@ -8,29 +8,30 @@ import org.apache.commons.math3.random.RandomGenerator;
  * This class stores all parameters of the perceptron.
  */
 public class PerceptronParams {
-    public static final int INPUT_SIZE = 2; // Final and static, since in our use case, they won't change.
-    public static final int OUTPUT_SIZE = 3;
+
     private double bias;
+    private int size;
     private ActivationFunction function;
     private double[] weights;
 
     /**
      * Class constructor.
-     * Initialises the weights array randomly based on the "He function", since for ReLU activation function.
+     * Initialises the weights array randomly based on the "He function" for ReLU activation function.
      *
      * @param function The Activation function to be used for the perceptron.
      */
-    public PerceptronParams(ActivationFunction function) {
+    public PerceptronParams(ActivationFunction function, int size) {
+        this.size = size;
         this.function = function;
-        this.weights = new double[INPUT_SIZE * OUTPUT_SIZE];
+        this.weights = new double[size];
         this.bias = 0.0;
-
         RandomGenerator rnd = new JDKRandomGenerator();
-        double stdDev = Math.sqrt(2.0 / INPUT_SIZE);
+        double stdDev = Math.sqrt(2.0 / size);
         for (int i = 0; i < weights.length; i++) {
             weights[i] = rnd.nextGaussian() * stdDev;
         }
     }
+
 
 
     /**
@@ -60,4 +61,9 @@ public class PerceptronParams {
     public void setWeights(double[] weights) {
         this.weights = weights;
     }
+
+    public int getSize() {
+        return size;
+    }
+
 }
