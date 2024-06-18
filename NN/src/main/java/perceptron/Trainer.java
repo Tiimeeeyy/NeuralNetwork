@@ -18,8 +18,9 @@ public class Trainer implements Perceptron {
 
     /**
      * Training function to train the Perceptron.
-     * @param input The current state.
-     * @param target The target state.
+     *
+     * @param input        The current state.
+     * @param target       The target state.
      * @param learningRate The learning rate of the system.
      */
     @Override

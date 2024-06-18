@@ -9,14 +9,15 @@ import perceptron.Predictor;
 import perceptron.UpdateParams;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class NeuralNetwork {
 
     private static final int INPUT_LAYER_SIZE = 2;
     private static final int OUTPUT_LAYER_SIZE = 3;
+    private static final Logger LOGGER = Logger.getLogger(NeuralNetwork.class.getName());
     private final int[] layerSizes;
     private List<Layer> layers;
     private ActivationFunction[] activationFunctions;
@@ -33,9 +34,10 @@ public class NeuralNetwork {
     }
 
     /**
+     * This method predicts an outcome based on the input.
      *
-     * @param input
-     * @return
+     * @param input The input based on which we predict.
+     * @return A vector containing the prediction.
      */
     public RealVector predict(RealVector input) {
         RealVector output = input;
@@ -47,11 +49,12 @@ public class NeuralNetwork {
 
     /**
      * Calculated the Error of the Node based on the Following parameters.
-     * @param layerOutputs The outputs of all layers.
-     * @param nodeIndex The index of the Node we're accessing.
-     * @param nextLayerErrors The Errors of the next node.
+     *
+     * @param layerOutputs        The outputs of all layers.
+     * @param nodeIndex           The index of the Node we're accessing.
+     * @param nextLayerErrors     The Errors of the next node.
      * @param prevLayerPerceptron The Perceptron of the previous layer.
-     * @param activationFunction The activation function of the System.
+     * @param activationFunction  The activation function of the System.
      * @return The Node error (double).
      */
     public double calculateNodeError(List<RealVector> layerOutputs, int nodeIndex, RealVector nextLayerErrors, List<Perceptron> prevLayerPerceptron, ActivationFunction activationFunction) {
@@ -78,63 +81,50 @@ public class NeuralNetwork {
     }
 
     public void train(RealVector input, RealVector target, double learningRate) {
-        List<RealVector> layerInputs = new ArrayList<>();
-        layerInputs.add(input);
         List<RealVector> layerOutputs = new ArrayList<>();
+        RealVector output = input;
 
         for (Layer layer : layers) {
-            RealVector output = layer.predict(layerInputs.getLast());
+            output = layer.predict(output);
             layerOutputs.add(output);
-            layerInputs.add(output);
         }
 
-        backpropagate(layerInputs, layerOutputs, target, learningRate);
-
+        RealVector outputError = target.subtract(output);
+        backpropagate(layerOutputs, outputError, learningRate);
     }
 
-    private void backpropagate(List<RealVector> layerInputs, List<RealVector> layerOutputs, RealVector target, double learningRate) {
-        List<RealVector> errors = new ArrayList<>();
-        errors.add(target.subtract(layerOutputs.getLast()));
+    public void backpropagate(List<RealVector> layerOutputs, RealVector outputError, double learningRate) {
+        List<RealVector> layerErrors = new ArrayList<>();
+        layerErrors.add(outputError);
 
-        for (int i = layers.size() - 1; i > 0; i--) {
-
+        for (int i = layers.size() - 2; i >= 0; i--) {
+            Layer currentLayer = layers.get(i + 1);
+            RealVector currentLayerError = new ArrayRealVector(currentLayer.getPerceptrons().size());
+            for (int j = 0; j < currentLayer.getPerceptrons().size(); j++) {
+                double error = calculateNodeError(layerOutputs, j, layerErrors.getFirst(), currentLayer.getPerceptrons(), activationFunctions[i]);
+                currentLayerError.setEntry(j, error);
+            }
+            layerErrors.addFirst(currentLayerError);
+        }
+        for (int i = 0; i < layers.size(); i++) {
             Layer currentLayer = layers.get(i);
-            Layer prevLayer = layers.get(i - 1);
-
-            List<RealVector> currentLayerOutputs = Collections.singletonList(layerOutputs.get(i));
-            int size = Math.min(currentLayer.getPerceptrons().size(), currentLayerOutputs.size());
-            List<Double> currentLayerErrors = new ArrayList<>(Collections.nCopies(size, 0.0));
-            for (int j = 0; j < size; j++) {
-              double error = calculateNodeError(currentLayerOutputs, j, errors.getFirst(), prevLayer.getPerceptrons(), activationFunctions[i - 1]);
-                currentLayerErrors.set(j,error);
-            }
-            for (int j = 0; j < prevLayer.getPerceptrons().size() - 1; j++) {
-                System.out.println("LAYERS UPDATED");
-                Perceptron perceptron = prevLayer.getPerceptrons().get(j);
-                double perceptronErrorDouble = currentLayerErrors.get(j);
-                double[] perceptronErrorArray = new double[((Predictor)perceptron).getParams().getWeights().length];
-                Arrays.fill(perceptronErrorArray, perceptronErrorDouble);
-                RealVector perceptronError = new ArrayRealVector(perceptronErrorArray);
-                System.out.println("Params " + Arrays.toString(((Predictor) perceptron).getParams().getWeights()));
-                System.out.println("Layer Inputs " + layerInputs.get(i-1));
-                System.out.println("Error " + perceptronError);
-                System.out.println("Learning rate " + learningRate);
-                UpdateParams.update(
-                        ((Predictor) perceptron).getParams(),
-                        layerInputs.get(i - 1),
-                        perceptronError,
-                        learningRate
-                );
-            }
-            errors.removeFirst();
-            if (i > 1) {
-                double[] combinedErrors = currentLayerErrors.stream()
-                        .mapToDouble(Double::doubleValue)
-                        .toArray();
-                errors.addFirst(new ArrayRealVector(combinedErrors));
-
+            for (int j = 0; j < currentLayer.getPerceptrons().size(); j++) {
+                Perceptron perceptron = currentLayer.getPerceptrons().get(j);
+                RealVector perceptronError = new ArrayRealVector(new double[]{layerErrors.get(i).getEntry(j)});
+                UpdateParams.update(((Predictor) perceptron).getParams(), layerOutputs.get(i), perceptronError, learningRate);
             }
         }
+        LOGGER.log(Level.INFO, "Backpropagation finished.");
+    }
+
+    public double predictQValue(RealVector state, RealVector action) {
+        RealVector stateAction = new ArrayRealVector(state.getDimension());
+        stateAction.setSubVector(0, state);
+        stateAction.setSubVector(state.getDimension(), action);
+
+        RealVector output = predict(stateAction);
+
+        return output.getEntry(0);
     }
 
     /**

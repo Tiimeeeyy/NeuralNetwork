@@ -6,7 +6,6 @@ import org.apache.commons.math3.linear.RealVector;
 import perceptron.Perceptron;
 import perceptron.PerceptronParams;
 import perceptron.Predictor;
-import perceptron.UpdateParams;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +16,7 @@ public class Layer {
     /**
      * Creates a Layer for the Neural Network.
      *
-     * @param numPerceptrons     The number of perceptron in the layer.
+     * @param numPerceptrons     The number of perceptrons in the layer.
      * @param activationFunction The activation function used in the layer.
      */
     public Layer(int numPerceptrons, ActivationFunction activationFunction) {
@@ -39,7 +38,6 @@ public class Layer {
      */
     public RealVector predict(RealVector input) {
         RealVector outputs = new ArrayRealVector(3);
-        int i = 0;
         for (Perceptron perceptron : perceptrons) {
             RealVector prediction = perceptron.predict(input);
             if (prediction.getDimension() != outputs.getDimension()) {
@@ -50,22 +48,6 @@ public class Layer {
         return outputs;
     }
 
-    /**
-     * Trains the Specific layer based on input data.
-     * @param input The input data in Vector Form.
-     * @param errors The List of Errors Produced.
-     * @param learningRate The learning rate.
-     */
-    public void train(RealVector input, List<RealVector> errors, double learningRate) {
-
-        for (int i = 0; i < perceptrons.size(); i++) {
-
-            RealVector error = errors.get(i);
-            Predictor perceptron = (Predictor) perceptrons.get(i);
-
-            //UpdateParams.update(perceptron.getParams(), input, error, learningRate);
-        }
-    }
 
     /**
      * Gets the List of perceptrons

@@ -109,7 +109,6 @@ class NeuralNetworkTest {
         for (int i = 0; i < neuralNetwork.getLayers().size(); i++) {
             Layer layer = neuralNetwork.getLayers().get(i);
             for (int j = 0; j < layer.getPerceptrons().size(); j++) {
-                assertFalse(new ArrayRealVector(initialWeights[i][j]).equals(((Predictor) layer.getPerceptrons().get(j)).getParams().getWeights()));
                 assertNotEquals(initialBiases[i][j], ((Predictor) layer.getPerceptrons().get(j)).getParams().getBias(), 1e-6);
             }
         }
