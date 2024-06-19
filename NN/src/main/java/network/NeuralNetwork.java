@@ -8,19 +8,20 @@ import perceptron.Perceptron;
 import perceptron.Predictor;
 import perceptron.UpdateParams;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class NeuralNetwork {
+public class NeuralNetwork implements Serializable {
 
     private static final int INPUT_LAYER_SIZE = 2;
     private static final int OUTPUT_LAYER_SIZE = 3;
     private static final Logger LOGGER = Logger.getLogger(NeuralNetwork.class.getName());
     private final int[] layerSizes;
-    private List<Layer> layers;
-    private ActivationFunction[] activationFunctions;
+    private transient List<Layer> layers;
+    private transient ActivationFunction[] activationFunctions;
 
     public NeuralNetwork(int hiddenLayerSize, ActivationFunction activationFunction) {
 

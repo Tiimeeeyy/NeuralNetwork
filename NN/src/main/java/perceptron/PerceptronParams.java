@@ -4,10 +4,12 @@ import math.activation_functions.ActivationFunction;
 import org.apache.commons.math3.random.JDKRandomGenerator;
 import org.apache.commons.math3.random.RandomGenerator;
 
+import java.io.Serializable;
+
 /**
  * This class stores all parameters of the perceptron.
  */
-public class PerceptronParams {
+public class PerceptronParams implements Serializable {
 
     private double bias;
     private int size;

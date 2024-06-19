@@ -2,7 +2,10 @@ package agent;
 
 import org.apache.commons.math3.linear.RealVector;
 
-public class State {
+import javax.crypto.SealedObject;
+import java.io.Serializable;
+
+public class State implements Serializable {
     private RealVector currentPosition;
 
 

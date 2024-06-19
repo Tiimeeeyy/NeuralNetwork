@@ -3,6 +3,7 @@ package network;
 import agent.Action;
 import agent.State;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
 /**
  * This class is used to save the Experiences of the Artificial neural network.
  */
-public class ReplayBuffer {
+public class ReplayBuffer implements Serializable {
     private static final int MAX_SIZE = 10000;
     private static List<Experience> experiences = new ArrayList<>();
 
@@ -41,13 +42,13 @@ public class ReplayBuffer {
      */
     public void addExperience(Experience experience) {
         if (experiences.size() >= MAX_SIZE) {
-            experiences.remove(0);
+            experiences.removeFirst();
         }
         experiences.add(experience);
     }
 
     // Nested static class to make sure the objects are immutable.
-    public static class Experience {
+    public static class Experience implements Serializable {
         public State state;
         public Action action;
         public double reward;
@@ -60,7 +61,7 @@ public class ReplayBuffer {
             this.nextState = nextState;
         }
 
-        /**
+        /*
          *      _                    ____        _ _                 _       _
          *     | | __ ___   ____ _  | __ )  ___ (_) | ___ _ __ _ __ | | __ _| |_ ___
          *  _  | |/ _` \ \ / / _` | |  _ \ / _ \| | |/ _ \ '__| '_ \| |/ _` | __/ _ \

@@ -2,7 +2,9 @@ package perceptron;
 
 import org.apache.commons.math3.linear.RealVector;
 
-public class Trainer implements Perceptron {
+import java.io.Serializable;
+
+public class Trainer implements Perceptron, Serializable {
     private PerceptronParams params;
     private Predictor predictor;
 

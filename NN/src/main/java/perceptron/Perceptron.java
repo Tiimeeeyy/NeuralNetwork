@@ -2,6 +2,7 @@ package perceptron;
 
 import org.apache.commons.math3.linear.RealVector;
 
+
 public interface Perceptron {
 
     RealVector predict(RealVector input);

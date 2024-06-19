@@ -1,6 +1,8 @@
 package math.activation_functions;
 
-public class ReLUFunction implements ActivationFunction {
+import java.io.Serializable;
+
+public class ReLUFunction implements ActivationFunction, Serializable {
     // This specific function uses the Leaky ReLU function
     // https://en.wikipedia.org/wiki/Rectifier_(neural_networks)
 

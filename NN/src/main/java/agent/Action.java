@@ -2,7 +2,9 @@ package agent;
 
 import org.apache.commons.math3.linear.RealVector;
 
-public class Action {
+import java.io.Serializable;
+
+public class Action implements Serializable {
     private RealVector action;
 
     public Action(RealVector action) {

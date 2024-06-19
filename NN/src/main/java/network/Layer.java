@@ -7,10 +7,11 @@ import perceptron.Perceptron;
 import perceptron.PerceptronParams;
 import perceptron.Predictor;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Layer {
+public class Layer implements Serializable {
     private List<Perceptron> perceptrons;
 
     /**

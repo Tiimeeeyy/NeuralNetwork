@@ -4,11 +4,13 @@ import math.activation_functions.ActivationFunction;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
 
+import java.io.Serializable;
+
 /**
  * Predictor class implements Perceptron.
  * This class is used to predict using the perceptron.
  */
-public class Predictor implements Perceptron {
+public class Predictor implements Perceptron, Serializable {
 
     private PerceptronParams params;
 
